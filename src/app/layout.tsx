@@ -1,4 +1,7 @@
-import type { Metadata } from "next";
+"use client";
+
+import { ThemeProvider, useTheme } from "next-themes";
+import { LanguageProvider, useLanguageContext } from "@/context/LanguageContext";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
 
@@ -12,11 +15,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Metadata específica para el proyecto
-export const metadata: Metadata = {
-  title: "Subscribe Form",
-  description: "A simple and functional subscription form built with Next.js.",
-};
 
 export default function RootLayout({
   children,
@@ -24,21 +22,61 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
-        style={{
-          background: "linear-gradient(to top, #232526, #414345)"
-        }}
-      >
+        className={`
+          ${geistSans.variable} 
+          ${geistMono.variable} 
+          antialiased 
+          min-h-screen 
+          flex 
+          flex-col 
+          bg-gradient-dark 
+          dark:bg-gradient-light
+        `}>
 
         {/* Main Content */}
-        <main className="flex-grow flex flex-col items-center justify-center">
-          
-          {children}
-        </main>
-
+        <ThemeProvider attribute="class" defaultTheme="dark">
+          <LanguageProvider>
+            <div className="absolute top-4 right-4 flex space-x-2">
+              <LanguageToggle />
+              <ThemeToggle />
+            </div>
+            
+            <main className="flex-grow flex flex-col items-center justify-center">
+              {children}
+            </main>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
+  );
+}
+
+// Componente de Toggle de Idioma
+function LanguageToggle() {
+  const { language, toggleLanguage } = useLanguageContext();
+
+  return (
+    <button 
+      onClick={toggleLanguage}
+      className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full"
+    >
+      {language === 'en' ? '🇺🇸' : '🇪🇸'}
+    </button>
+  );
+}
+
+// Componente de Toggle de Tema
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <button
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full"
+    >
+      {theme === 'dark' ? '☀️' : '🌙'}
+    </button>
   );
 }

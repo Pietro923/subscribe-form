@@ -9,6 +9,10 @@ export default {
   ],
   theme: {
   	extend: {
+		backgroundImage: { 
+			'gradient-dark': 'linear-gradient(to right, #e6dada, #274046);',
+			'gradient-light': 'linear-gradient(to top, #232526, #414345)',
+		  },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
